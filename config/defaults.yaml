@@ -1,0 +1,6 @@
+---
+region: "eu-west-2"
+component: "open-policy-agent"
+
+state_bucket_name: "infrablocks-%{hiera('component')}-%{deployment_identifier}"
+secrets_bucket_name: "%{hiera('state_bucket_name')}"

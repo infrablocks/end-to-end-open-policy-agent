@@ -25,8 +25,8 @@ run/logs/
 
 # Terraform
 .terraform
-*.tfstate
-*.tfstate.backup
+# *.tfstate
+# *.tfstate.backup
 
 # State bucket state - remove this
-state/*
+# state/*
