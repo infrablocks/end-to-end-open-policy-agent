@@ -29,37 +29,17 @@ namespace :bootstrap do
   end
 end
 
-namespace :domain do
+namespace :repository do
   RakeTerraform.define_command_tasks(
-      configuration_name: 'domain',
-      argument_names: [:deployment_identifier, :domain_name]
+      configuration_name: 'repository',
+      argument_names: [:deployment_identifier]
   ) do |t, args|
     configuration = configuration
-        .for_overrides(domain_name: args.domain_name)
         .for_scope(
             {deployment_identifier: args.deployment_identifier}
-                .merge(role: 'domain'))
+                .merge(role: 'repository'))
 
-    t.source_directory = 'infra/domain'
-    t.work_directory = 'build'
-
-    t.backend_config = configuration.backend_config
-    t.vars = configuration.vars
-  end
-end
-
-namespace :certificate do
-  RakeTerraform.define_command_tasks(
-      configuration_name: 'certificate',
-      argument_names: [:deployment_identifier, :domain_name]
-  ) do |t, args|
-    configuration = configuration
-        .for_overrides(domain_name: args.domain_name)
-        .for_scope(
-            {deployment_identifier: args.deployment_identifier}
-                .merge(role: 'certificate'))
-
-    t.source_directory = 'infra/certificate'
+    t.source_directory = 'infra/repository'
     t.work_directory = 'build'
 
     t.backend_config = configuration.backend_config
