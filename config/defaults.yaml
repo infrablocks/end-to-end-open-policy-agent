@@ -2,6 +2,8 @@
 region: "eu-west-2"
 component: "open-policy-agent"
 
+repository_name: 'ifbk-test/opa-aws'
+
 state_bucket_name: "infrablocks-%{hiera('component')}-%{deployment_identifier}"
 secrets_bucket_name: "%{hiera('state_bucket_name')}"
 
