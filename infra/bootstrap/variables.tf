@@ -6,6 +6,6 @@ variable "deployment_identifier" {
   description = "A unique identifier for this bucket, used for tagging. Useful if you use this module many times."
 }
 
-variable "state_bucket_name" {
-  description = "Your desired bucket name."
+variable "storage_bucket_name" {
+  description = "Your desired bucket name for storing state and artifacts for this component."
 }

@@ -2,12 +2,26 @@
 region: "eu-west-2"
 component: "open-policy-agent"
 
-repository_name: 'ifbk-test/opa-aws'
+repository_name: 'infrablocks/open-policy-agent-aws-lambda'
 
-state_bucket_name: "infrablocks-%{hiera('component')}-%{deployment_identifier}"
+storage_bucket_name: "infrablocks-%{hiera('component')}-%{deployment_identifier}"
 secrets_bucket_name: "%{hiera('state_bucket_name')}"
 
+domain_name: "%{hiera('component')}-%{deployment_identifier}.infrablocks.click"
+public_zone_id: 'Z08829023L5IPIQBJOX63'
+private_zone_id: 'Z0211739BXR21FNN139O'
+
 repository_state_bucket_region: "%{hiera('region')}"
-repository_state_bucket_name: "%{hiera('state_bucket_name')}"
+repository_state_bucket_name: "%{hiera('storage_bucket_name')}"
 repository_state_bucket_is_encrypted: "true"
 repository_state_key: "repository/deployments/%{deployment_identifier}.tfstate"
+
+lambda_state_bucket_region: "%{hiera('region')}"
+lambda_state_bucket_name: "%{hiera('storage_bucket_name')}"
+lambda_state_bucket_is_encrypted: "true"
+lambda_state_key: "lambda/deployments/%{deployment_identifier}.tfstate"
+
+api_gateway_state_bucket_region: "%{hiera('region')}"
+api_gateway_state_bucket_name: "%{hiera('storage_bucket_name')}"
+api_gateway_state_bucket_is_encrypted: "true"
+api_gateway_state_key: "api-gateway/deployments/%{deployment_identifier}.tfstate"

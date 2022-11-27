@@ -1,0 +1,19 @@
+---
+vars:
+  region: "%{hiera('region')}"
+
+  component: "%{hiera('component')}"
+  deployment_identifier: "%{deployment_identifier}"
+
+  domain_name: "%{hiera('domain_name')}"
+  hosted_zone_id: "%{hiera('public_zone_id')}"
+
+  lambda_state_bucket_name: "%{hiera('lambda_state_bucket_name')}"
+  lambda_state_key: "%{hiera('lambda_state_key')}"
+  lambda_state_bucket_region: "%{hiera('lambda_state_bucket_region')}"
+
+backend_config:
+  region: "%{hiera('api_gateway_state_bucket_region')}"
+  bucket: "%{hiera('api_gateway_state_bucket_name')}"
+  encrypt: "%{hiera('api_gateway_state_bucket_is_encrypted')}"
+  key: "%{hiera('api_gateway_state_key')}"

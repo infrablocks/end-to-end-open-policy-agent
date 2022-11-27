@@ -8,6 +8,7 @@ module "repository" {
 
   repository_name = var.repository_name
   repository_force_delete = true
+  repository_image_tag_mutability = "MUTABLE"
 
   allow_in_account_lambda_pull_access = true
 }
