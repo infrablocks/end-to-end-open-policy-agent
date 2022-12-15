@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 require 'confidante'
 require 'rake_docker'
 require 'rake_factory/kernel_extensions'
 require 'rake_ssh'
 require 'rake_terraform'
 require 'ruby_terraform/output'
+require 'rubocop/rake_task'
 
 require_relative 'lib/version'
 
@@ -15,13 +18,25 @@ RakeTerraform.define_installation_tasks(
   version: '1.3.1'
 )
 
+RuboCop::RakeTask.new
+
+namespace :build do
+  namespace :code do
+    desc 'Run all checks on the build code'
+    task check: [:rubocop]
+
+    desc 'Attempt to automatically fix issues with the build code'
+    task fix: [:'rubocop:autocorrect_all']
+  end
+end
+
 namespace :bootstrap do
   RakeTerraform.define_command_tasks(
     configuration_name: 'bootstrap',
     argument_names: [:deployment_identifier]
   ) do |t, args|
     configuration = configuration
-                      .for_scope(args.to_h.merge(role: 'bootstrap'))
+                    .for_scope(args.to_h.merge(role: 'bootstrap'))
 
     t.source_directory = 'infra/bootstrap'
     t.work_directory = 'build'
@@ -29,7 +44,8 @@ namespace :bootstrap do
     t.state_file =
       File.join(
         Dir.pwd,
-        "state/bootstrap/#{args.deployment_identifier}.tfstate")
+        "state/bootstrap/#{args.deployment_identifier}.tfstate"
+      )
     t.vars = configuration.vars
   end
 end
@@ -41,9 +57,10 @@ namespace :repository do
   ) do |t, args|
     configuration =
       configuration
-        .for_scope(
-          { deployment_identifier: args.deployment_identifier }
-            .merge(role: 'repository'))
+      .for_scope(
+        { deployment_identifier: args.deployment_identifier }
+          .merge(role: 'repository')
+      )
 
     t.source_directory = 'infra/repository'
     t.work_directory = 'build'
@@ -60,7 +77,7 @@ namespace :image do
   ) do |t, args|
     configuration =
       configuration
-        .for_scope(args.to_h.merge(role: 'repository'))
+      .for_scope(args.to_h.merge(role: 'repository'))
 
     t.work_directory = 'build/images'
 
@@ -80,19 +97,21 @@ namespace :image do
         raw: true,
         source_directory: 'infra/repository',
         work_directory: 'build',
-        backend_config: configuration.backend_config)
+        backend_config: configuration.backend_config
+      )
     end
 
     t.credentials = dynamic do
-      RakeDocker::Authentication::ECR.new { |c|
+      RakeDocker::Authentication::ECR.new do |c|
         c.region = configuration.region
         c.registry_id = RubyTerraform::Output.for(
           name: 'registry_id',
           raw: true,
           source_directory: 'infra/repository',
           work_directory: 'build',
-          backend_config: configuration.backend_config)
-      }.call
+          backend_config: configuration.backend_config
+        )
+      end.call
     end
 
     t.platform = 'linux/amd64'
@@ -108,12 +127,13 @@ namespace :lambda do
   ) do |t, args|
     configuration =
       configuration
-        .for_scope(
-          { deployment_identifier: args.deployment_identifier }
-            .merge(role: 'lambda'))
-        .for_overrides(
-          image_tag: version.to_docker_tag
-        )
+      .for_scope(
+        { deployment_identifier: args.deployment_identifier }
+          .merge(role: 'lambda')
+      )
+      .for_overrides(
+        image_tag: version.to_docker_tag
+      )
 
     t.source_directory = 'infra/lambda'
     t.work_directory = 'build'
@@ -130,9 +150,10 @@ namespace :api_gateway do
   ) do |t, args|
     configuration =
       configuration
-        .for_scope(
-          { deployment_identifier: args.deployment_identifier }
-            .merge(role: 'api_gateway'))
+      .for_scope(
+        { deployment_identifier: args.deployment_identifier }
+          .merge(role: 'api_gateway')
+      )
 
     t.source_directory = 'infra/api_gateway'
     t.work_directory = 'build'

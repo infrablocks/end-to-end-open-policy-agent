@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 gem 'activesupport'
@@ -12,4 +14,6 @@ gem 'rake_docker'
 gem 'rake_fly'
 gem 'rake_ssh'
 gem 'rake_terraform'
+gem 'rubocop'
+gem 'rubocop-rake'
 gem 'semantic'
